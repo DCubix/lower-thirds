@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Viewer</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.6/build/pure-min.css" integrity="sha384-Uu6IeWbM+gzNVXJcM9XV3SohHtmWE+3VGi496jvgX1jyvDTXfdK+rfZc8C1Aehk5" crossorigin="anonymous">
+    <link rel="stylesheet" href="custom.css">
+
+    <style>
+        body, html {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background: none;
+        }
+
+        .main {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="main">
+        <div class="lower-third bottom-left" id="lower-third" style="opacity: 0;">
+            <div class="lower-third-image" id="img" style="background-image: url(placeholder.png);"></div>
+            <div class="lower-third-content" id="content">
+                <span class="lower-third-title" id="titulo">Titulo</span>
+                <span class="lower-third-subtitle" id="subtitulo">SubTitulo</span>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let ch = new BroadcastChannel('card_display_obs');
+
+        function show() {
+            
+            let img = document.getElementById('img');
+            let content = document.getElementById('content');
+            let lowerThird = document.getElementById('lower-third');
+
+            lowerThird.style.opacity = '1.0';
+
+            img.classList.remove('hide');
+            void img.offsetWidth;
+            img.classList.add('show');
+
+            content.classList.remove('hide');
+            void content.offsetWidth;
+            content.classList.add('show');
+        }
+
+        function hide() {
+            let img = document.getElementById('img');
+            let content = document.getElementById('content');
+            let lowerThird = document.getElementById('lower-third');
+
+            img.classList.remove('show');
+            void img.offsetWidth;
+            img.classList.add('hide');
+
+            content.classList.remove('show');
+            void content.offsetWidth;
+            content.classList.add('hide');
+            setTimeout(function() {
+                lowerThird.style.opacity = '0.0';
+                ch.postMessage(JSON.stringify({ type: 'finished' }));
+            }, 2000);
+        }
+
+        ch.onmessage = (e) => {
+            let data = JSON.parse(e.data);
+            if (data.type === 'show') {
+                dt = data.data;
+                let img = document.getElementById('img');
+                let titulo = document.getElementById('titulo');
+                let subtitulo = document.getElementById('subtitulo');
+
+                img.style.display = dt.image ? 'block' : 'none';
+                img.style.backgroundImage = `url(${dt.image})`;
+                titulo.innerText = dt.title;
+                subtitulo.innerText = dt.subtitle;
+
+                show();
+            } else if (data.type === 'hide') {
+                hide();
+            }
+        };
+    </script>
+
+</body>
+</html>

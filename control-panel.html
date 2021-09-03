@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control Panel</title>
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.6/build/pure-min.css" integrity="sha384-Uu6IeWbM+gzNVXJcM9XV3SohHtmWE+3VGi496jvgX1jyvDTXfdK+rfZc8C1Aehk5" crossorigin="anonymous">
+    <link rel="stylesheet" href="custom.css">
+
+</head>
+<body>
+    <div class="pure-g" style="padding: 6px;" id="app">
+        <div class="pure-u-5-5 card">
+            <!-- <h2 class="card-border card-header">Cards</h2> -->
+            <div class="card-content">
+                <div class="pure-g" style="margin-bottom: 0.5rem;">
+                    <div class="pure-u-1-5">
+                        <button
+                            v-if="queue.length === 0 && current === null"
+                            @click="newItem"
+                            style="display: flex; align-items: center; justify-content: center; width: 100%;"
+                            class="pure-button pure-button-primary"><i class="material-icons">add</i> Novo Card</button>
+                    </div>
+                    <div class="pure-u-4-5">
+                    </div>
+                </div>
+
+                <item
+                    v-for="(item, i) in items"
+                    :key="i"
+                    v-model="items[i]"
+                    :time="~~time+1"
+                    @delete="items.splice(i, 1)"
+                    @saved="save"
+                    @change="stateChange(arguments[0], i)"></item>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="./vue.min.js"></script>
+    <script>
+        let ch = new BroadcastChannel('card_display_obs');
+
+        const toBase64 = file => new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
+
+        Vue.component('item', {
+            template: `<div class="list-tile">
+                <input @change="c_fileSelect" type="file" style="display: none;" ref="fp" />
+
+                <div class="list-tile-leading" :style="val.image ? 'background-image: url(' + val.image + ');' : 'background-image: url(placeholder.png);'">
+                    <button @click="pickFile" v-if="editing && !val.image" class="pure-button pure-button-primary icon-button" style="background: rgba(0, 0, 0, 0.6);"><i class="material-icons">edit</i></button>
+                    <button @click="val.image = null" v-if="editing && val.image" class="pure-button pure-button-primary icon-button" style="background: rgba(0, 0, 0, 0.6);"><i class="material-icons">close</i></button>
+                </div>
+                
+                <div class="list-tile-content">
+                    <span class="list-tile-title">
+                        <span v-if="!editing">{{ val.title }}</span>
+                        <input v-if="editing" type="text" placeholder="Título" style="width: 100%;" v-model="val.title" />
+                    </span>
+                    <span class="list-tile-subtitle">
+                        <span v-if="!editing">{{ val.subtitle }} ({{ val.duration }}s)</span>
+
+                        <div v-if="editing" style="display: flex; align-items: center; justify-content: center; width: 100%;">
+                            <input type="text" placeholder="Subtitulo" style="flex: 1 1 auto;" v-model="val.subtitle" />
+                            <i class="material-icons">schedule</i>
+                            <input type="number" min="5" max="120" v-model="val.duration" placeholder="Duração"/>
+                        </div>
+                        
+                    </span>
+                </div>
+                <div class="list-tile-trailing">
+                    <span v-if="!editing && val.state === 'P'" class="chip">{{ time }}s</span>
+                    <button
+                        v-if="!editing && val.state === 'Q'"
+                        class="pure-button pure-button-primary icon-button pure-button-disabled"
+                        style="margin: 0 0.2rem;">
+                        <i class="material-icons">pending</i>
+                    </button>
+                    <button
+                        v-if="!editing && val.state === 'P'"
+                        class="pure-button pure-button-primary icon-button pure-button-disabled"
+                        style="margin: 0 0.2rem; background: rgb(28, 184, 65);">
+                        <i class="material-icons spin">sync</i>
+                    </button>
+
+                    <button
+                        v-if="!editing && val.state === 'I'"
+                        @click="val.state = 'Q'; $emit('change', val);"
+                        class="pure-button pure-button-primary icon-button"
+                        style="background: rgb(28, 184, 65);"><i class="material-icons">play_arrow</i></button>
+
+                    <button
+                        v-if="!editing && (val.state === 'P' || val.state === 'Q')"
+                        @click="val.state = 'S'; $emit('change', val);"
+                        class="pure-button pure-button-primary icon-button"
+                        style="background: rgb(184, 28, 28);">
+                        <i class="material-icons" v-if="val.state === 'P'">stop</i>
+                        <i class="material-icons" v-if="val.state === 'Q'">delete_outline</i>
+                    </button>
+
+                    <button
+                        v-if="!editing && val.state !== 'P' && val.state !== 'Q'"
+                        @click="editing = true"
+                        class="pure-button pure-button-primary icon-button"
+                        style="background: rgb(14, 111, 207); margin: 0 0.2rem;">
+                        <i class="material-icons">edit</i>
+                    </button>
+
+                    <button
+                        v-if="editing"
+                        @click="editing = false; $emit('saved');"
+                        class="pure-button pure-button-primary icon-button"
+                        style="background: rgb(28, 184, 65); margin-left: 0.4rem; width: auto;">
+                        <i class="material-icons">check_circle</i> Salvar
+                    </button>
+
+                    <button
+                        @click="$emit('delete'); $emit('saved');"
+                        v-if="!editing && val.state !== 'P' && val.state !== 'Q'"
+                        class="pure-button pure-button-primary icon-button"
+                        style="background: rgb(184, 28, 28);"><i class="material-icons">clear</i></button>
+                </div>
+            </div>`,
+            props: [ 'value', 'time' ],
+            data() {
+                return {
+                    editing: false,
+                    val: {
+                        ...this.value,
+                    }
+                };
+            },
+            watch: {
+                val: {
+                    deep: true,
+                    handler(value) {
+                        this.$emit('input', value);
+                    }
+                }
+            },
+            methods: {
+                change() {
+                    this.$emit('input', this.val);
+                },
+                pickFile() {
+                    let fp = this.$refs.fp;
+                    fp.click();
+                },
+                async c_fileSelect(e) {
+                    let fp = e.target;
+                    if (!fp.files[0]) return;
+                    this.val.image = await toBase64(fp.files[0]);
+                }
+            }
+        });
+
+        let app = new Vue({
+            el: '#app',
+            data: {
+                items: [],
+                queue: [],
+                time: 0,
+                current: null,
+
+                canAdvance: true,
+            },
+            mounted() {
+                this.loop();
+                this.items = JSON.parse(localStorage.getItem('obs_lt_items') || '[]');
+            },
+            methods: {
+                save() {
+                    localStorage.setItem('obs_lt_items', JSON.stringify(this.items));
+                },
+                newItem() {
+                    this.items.unshift({
+                        title: 'Titulo',
+                        subtitle: 'SubTitulo',
+                        duration: 5,
+                        state: 'I',
+                        image: null
+                    });
+                },
+                stateChange(data, index) {
+                    if (data.state === 'Q') {
+                        this.queue.push(index);
+                    } else if (data.state === 'I') {
+                        if (this.queue.includes(index)) {
+                            this.queue.splice(this.queue.indexOf(index), 1);
+                        }
+                    } else if (data.state === 'S') {
+                        if (this.queue.includes(index)) {
+                            this.queue.splice(this.queue.indexOf(index), 1);
+                        }
+
+                        if (this.current === index) {
+                            console.log('Stopped ' + this.current);
+                            this.items[this.current].state = 'I';
+
+                            // Send message
+                            let msg = {
+                                type: 'hide',
+                            };
+                            ch.postMessage(JSON.stringify(msg));
+
+                            this.current = null;
+                            this.canAdvance = false;
+                        } else {
+                            this.items[index].state = 'I';
+                        }
+                    }
+                    console.log(this.queue);
+                },
+                delete(i) {
+                    this.items.splice(i, 1);
+                },
+
+                loop() {
+                    if (this.current === null && this.queue.length > 0 && this.canAdvance) {
+                        this.current = this.queue.shift();
+                        if (this.current !== null) {
+                            this.items[this.current].state = 'P';
+                            this.time = this.items[this.current].duration;
+                            console.log('Playing ' + this.current);
+
+                            // Send message
+                            let msg = {
+                                type: 'show',
+                                data: this.items[this.current]
+                            };
+                            ch.postMessage(JSON.stringify(msg));
+                        }
+                    } else if (this.current !== null) {
+                        if (this.time > 0.0) {
+                            this.time -= 1.0 / 60.0;
+                        } else {
+                            console.log('Stopped ' + this.current);
+                            this.items[this.current].state = 'I';
+
+                            // Send message
+                            let msg = {
+                                type: 'hide',
+                            };
+                            ch.postMessage(JSON.stringify(msg));
+
+                            this.current = null;
+                            this.canAdvance = false;
+                        }
+                    }
+
+                    window.requestAnimationFrame(this.loop.bind(this));
+                },
+            }
+        });
+        
+        ch.onmessage = (e) => {
+            let data = JSON.parse(e.data);
+            if (data.type === 'finished') {
+                app.canAdvance = true;
+            }
+        };
+
+    </script>
+</body>
+</html>

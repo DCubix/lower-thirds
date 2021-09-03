@@ -1,0 +1,244 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #111;
+    color: #eee;
+}
+
+.card {
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+}
+
+.card-border {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+    padding: 1.25rem;
+    margin: 0;
+    background-color: #333;
+}
+
+.card-content {
+    padding: 0.4rem;
+    margin: 0;
+    background-color: #444;
+}
+
+.list-tile {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0.5rem;
+    margin: 0;
+    margin-bottom: 0.5rem;
+    background-color: #777;
+    border-radius: 3px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+}
+
+.list-tile .list-tile-leading {
+    width: 40px;
+    height: 40px;
+    margin-right: 0.7rem;
+    background-color: black;
+    border-radius: 50%;
+    overflow: hidden;
+
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.list-tile .list-tile-trailing {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.list-tile .list-tile-title {
+    font-size: 1rem;
+    font-weight: bold;
+    display: flex;
+    flex-direction: row;
+}
+
+.list-tile .list-tile-subtitle {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #ddd;
+    display: flex;
+    flex-direction: row;
+}
+
+.list-tile .list-tile-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    margin-right: 0.7rem;
+}
+
+.chip {
+    display: inline;
+    padding: 0.4rem;
+    margin: 0;
+    background-color: #222;
+    border-radius: 64px;
+}
+
+.icon-button {
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-button .material-icons {
+    font-size: 22px;
+}
+
+.icon-button-tiny {
+    width: 16px;
+    height: 16px;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    color: #777;
+    margin-left: 0.1rem;
+}
+
+.icon-button-tiny .material-icons {
+    font-size: 17px;
+}
+
+@keyframes ani-reveal-card {
+    0% {
+        clip-path: polygon(0 0, 0% 0, 0% 100%, 0 100%);
+    }
+    100% {
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    }
+}
+
+@keyframes ani-show-image {
+    0% {
+        width: 0;
+    }
+    100% {
+        width: 100px;
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.spin {
+    animation: spin 1s linear infinite;
+    animation-direction: reverse;
+}
+
+.lower-third-image.show {
+    animation-name: ani-show-image;
+    animation-duration: 1s;
+    animation-timing-function: ease-in-out;
+    animation-direction: normal;
+    animation-fill-mode: backwards;
+    animation-delay: 0.4s;
+}
+
+.lower-third-content.show {
+    animation-name: ani-reveal-card;
+    animation-duration: 1.2s;
+    animation-timing-function: ease-in-out;
+    animation-direction: normal;
+    animation-fill-mode: forwards;
+}
+
+.lower-third-image.hide {
+    animation-name: ani-show-image;
+    animation-duration: 0.7s;
+    animation-timing-function: ease-in-out;
+    animation-direction: reverse;
+    animation-fill-mode: forwards;
+}
+
+.lower-third-content.hide {
+    animation-name: ani-reveal-card;
+    animation-duration: 0.8s;
+    animation-timing-function: ease-in-out;
+    animation-direction: reverse;
+    animation-fill-mode: forwards;
+    animation-delay: 0.5s;
+}
+
+.lower-third {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    position: absolute;
+
+    height: 100px;
+
+    transition: opacity 0.3s;
+
+    filter: drop-shadow(0px 3px 5px rgba(0, 0, 0, 0.5));
+}
+
+.lower-third .lower-third-image {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+
+    width: 100px;
+    height: 100px;
+    margin-right: 0.5rem;
+    overflow: hidden;
+
+}
+
+.lower-third .lower-third-content {
+    background-color: #0e4d8c;
+    color: white;
+    padding: 1.4rem;
+    padding-right: 2.2rem;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+
+    min-width: 360px;
+}
+
+.lower-third .lower-third-title {
+    font-size: 1.6rem;
+    margin-bottom: 0.4rem;
+}
+
+.lower-third .lower-third-subtitle {
+    font-size: 1.2rem;
+}
+
+.bottom-left {
+    left: 5.5rem;
+    bottom: 7rem;
+}
