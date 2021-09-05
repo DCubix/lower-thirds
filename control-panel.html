@@ -22,7 +22,7 @@
                             v-if="queue.length === 0 && current === null"
                             @click="newItem"
                             style="display: flex; align-items: center; justify-content: center; width: 100%;"
-                            class="pure-button pure-button-primary"><i class="material-icons">add</i> Novo Card</button>
+                            class="pure-button pure-button-primary"><i class="material-icons">add</i> New Card</button>
                     </div>
                     <div class="pure-u-4-5">
                     </div>
@@ -64,15 +64,15 @@
                 <div class="list-tile-content">
                     <span class="list-tile-title">
                         <span v-if="!editing">{{ val.title }}</span>
-                        <input v-if="editing" type="text" placeholder="Título" style="width: 100%;" v-model="val.title" />
+                        <input v-if="editing" type="text" placeholder="Title" style="width: 100%;" v-model="val.title" />
                     </span>
                     <span class="list-tile-subtitle">
                         <span v-if="!editing">{{ val.subtitle }} ({{ val.duration }}s)</span>
 
                         <div v-if="editing" style="display: flex; align-items: center; justify-content: center; width: 100%;">
-                            <input type="text" placeholder="Subtitulo" style="flex: 1 1 auto;" v-model="val.subtitle" />
+                            <input type="text" placeholder="Subtitle" style="flex: 1 1 auto;" v-model="val.subtitle" />
                             <i class="material-icons">schedule</i>
-                            <input type="number" min="5" max="120" v-model="val.duration" placeholder="Duração"/>
+                            <input type="number" min="5" max="120" v-model="val.duration" placeholder="Duration (s)"/>
                         </div>
                         
                     </span>
@@ -120,7 +120,7 @@
                         @click="editing = false; $emit('saved');"
                         class="pure-button pure-button-primary icon-button"
                         style="background: rgb(28, 184, 65); margin-left: 0.4rem; width: auto;">
-                        <i class="material-icons">check_circle</i> Salvar
+                        <i class="material-icons">check_circle</i> Save
                     </button>
 
                     <button
