@@ -1,0 +1,19 @@
+{
+    "type": "card",
+    "style": "background-color: #ffffff;",
+    "child": {
+        "type": "column",
+        "children": [
+            {
+                "type": "text",
+                "style": "font-size: 30px;",
+                "text": "{{ title }}"
+            },
+            {
+                "type": "text",
+                "style": "font-size: 20px;",
+                "text": "{{ subtitle }}"
+            }
+        ]
+    }
+}
