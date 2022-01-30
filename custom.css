@@ -219,9 +219,10 @@ body {
 
 .lower-third .lower-third-content {
     background-color: #0e4d8c;
+    background: linear-gradient(to bottom right, #0e4d8c 40%, #207eba 100%);
     color: white;
-    padding: 1.4rem;
-    padding-right: 2.2rem;
+    padding: 1rem;
+    padding-right: 2rem;
     margin: 0;
     display: flex;
     flex-direction: column;
@@ -230,12 +231,13 @@ body {
 }
 
 .lower-third .lower-third-title {
-    font-size: 1.6rem;
-    margin-bottom: 0.4rem;
+    font-size: 1.9rem;
+    margin-bottom: 0.3rem;
 }
 
 .lower-third .lower-third-subtitle {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
+    margin-bottom: 0.3rem;
 }
 
 .bottom-left {

@@ -32,7 +32,12 @@
             <div class="lower-third-image" id="img" style="background-image: url(placeholder.png);"></div>
             <div class="lower-third-content" id="content">
                 <span class="lower-third-title" id="titulo">Titulo</span>
-                <span class="lower-third-subtitle" id="subtitulo">SubTitulo</span>
+                <div style="display: flex; align-items: center; opacity: 0.8;">
+                    <img src="pix.png" style="height: 28px; width: auto; margin-right: 6px; margin-left: 6px;" />
+                    <span class="lower-third-subtitle" id="caption">PIX</span>
+                    <img src="instagram.png" style="width: 32px; height: auto; margin-right: 6px; margin-left: 6px;" />
+                    <span class="lower-third-subtitle" id="subtitulo" style="margin-right: 12px;">Instagram</span>
+                </div>
             </div>
         </div>
     </div>
@@ -82,11 +87,13 @@
                 let img = document.getElementById('img');
                 let titulo = document.getElementById('titulo');
                 let subtitulo = document.getElementById('subtitulo');
+                let caption = document.getElementById('caption');
 
                 img.style.display = dt.image ? 'block' : 'none';
                 img.style.backgroundImage = `url(${dt.image})`;
                 titulo.innerText = dt.title;
                 subtitulo.innerText = dt.subtitle;
+                caption.innerText = dt.caption;
 
                 show();
             } else if (data.type === 'hide') {
