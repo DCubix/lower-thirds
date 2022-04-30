@@ -7,37 +7,32 @@
     <title>Control Panel</title>
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.6/build/pure-min.css" integrity="sha384-Uu6IeWbM+gzNVXJcM9XV3SohHtmWE+3VGi496jvgX1jyvDTXfdK+rfZc8C1Aehk5" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="custom.css">
 
 </head>
 <body>
-    <div class="pure-g" style="padding: 6px;" id="app">
-        <div class="pure-u-5-5 card">
-            <!-- <h2 class="card-border card-header">Cards</h2> -->
-            <div class="card-content">
-                <div class="pure-g" style="margin-bottom: 0.5rem;">
-                    <div class="pure-u-1-5">
-                        <button
-                            v-if="queue.length === 0 && current === null"
-                            @click="newItem"
-                            style="display: flex; align-items: center; justify-content: center; width: 100%;"
-                            class="pure-button pure-button-primary"><i class="material-icons">add</i> New Card</button>
-                    </div>
-                    <div class="pure-u-4-5">
-                    </div>
-                </div>
-
-                <item
-                    v-for="(item, i) in items"
-                    :key="i"
-                    v-model="items[i]"
-                    :time="~~time+1"
-                    @delete="items.splice(i, 1)"
-                    @saved="save"
-                    @change="stateChange(arguments[0], i)"></item>
-
+    <div class="w3-container" style="padding: 6px;" id="app">
+        <div class="w3-row">
+            <div class="w3-col s12 m12 l12" style="margin-bottom: 0.5rem;">
+                <button
+                    v-if="queue.length === 0 && current === null"
+                    @click="newItem"
+                    style="display: flex; align-items: center; justify-content: center; width: 100%;"
+                    class="primary">
+                    <span class="material-icons">add</span> Novo Card
+                </button>
             </div>
+
+            <item
+                class="w3-col s12 m12 l12"
+                v-for="(item, i) in items"
+                :key="i"
+                v-model="items[i]"
+                :time="~~time+1"
+                @delete="items.splice(i, 1)"
+                @saved="save"
+                @change="stateChange(arguments[0], i)"></item>
         </div>
     </div>
 
@@ -53,83 +48,95 @@
         });
 
         Vue.component('item', {
-            template: `<div class="list-tile">
+            template: `<div class="list-tile w3-row">
                 <input @change="c_fileSelect" type="file" style="display: none;" ref="fp" />
 
-                <div class="list-tile-leading" :style="val.image ? 'background-image: url(' + val.image + ');' : 'background-image: url(placeholder.png);'">
-                    <button @click="pickFile" v-if="editing && !val.image" class="pure-button pure-button-primary icon-button" style="background: rgba(0, 0, 0, 0.6);"><i class="material-icons">edit</i></button>
-                    <button @click="val.image = null" v-if="editing && val.image" class="pure-button pure-button-primary icon-button" style="background: rgba(0, 0, 0, 0.6);"><i class="material-icons">close</i></button>
+                <div class="list-tile-leading w3-col" :style="val.image ? 'background-image: url(' + val.image + ');' : 'background-image: url(placeholder.png);' + 'padding: 8px;'">
+                    <button @click="pickFile" v-if="editing && !val.image"><i class="material-icons">edit</i></button>
+                    <button @click="val.image = null" v-if="editing && val.image"><i class="material-icons">close</i></button>
                 </div>
                 
-                <div class="list-tile-content">
-                    <span class="list-tile-title">
-                        <span v-if="!editing">{{ val.title }}</span>
-                        <input v-if="editing" type="text" placeholder="Nome" style="width: 100%;" v-model="val.title" />
-                    </span>
-                    <span class="list-tile-subtitle">
-                        <span v-if="!editing">{{ val.subtitle }}<br>{{ val.caption }} ({{ val.duration }}s)</span>
+                <div class="w3-col s6 m7 l8">
+                    <div class="w3-row">
+                        <div class="w3-col s12 m12 l12">
+                            <span v-if="!editing">{{ val.title }}</span>
+                            <input v-if="editing" type="text" placeholder="Nome" v-model="val.title" style="width: 100%;" />
+                        </div>
+                    </div>
+                    <div class="w3-row">
+                        <span v-if="!editing" class="w3-col s12 m12 l12">{{ val.subtitle }}<br>{{ val.caption }} ({{ val.duration }}s)</span>
 
-                        <div v-if="editing" style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%;">
-                            <input type="text" placeholder="Instagram" style="width: 100%;" v-model="val.subtitle" />
-                            <input type="text" placeholder="PIX" style="width: 100%;" v-model="val.caption" />
-                            <div style="display: flex;">
-                                <i class="material-icons">schedule</i><input type="number" min="5" max="120" v-model="val.duration" placeholder="Duration (s)"/>
+                        <div v-if="editing" class="w3-col s12 m12 l12">
+                            <div class="w3-row">
+                                <input class="w3-col s12 m6 l6" type="text" placeholder="Instagram" v-model="val.subtitle" />
+                                <input class="w3-col s12 m6 l6" type="text" placeholder="PIX" v-model="val.caption" />
+                            </div>
+                            <div class="w3-row">
+                                <label class="w3-col s12 m6 l6">
+                                    <span>Duração (segundos)</span>
+                                    <input type="number" min="5" max="120" v-model="val.duration"/>
+                                </label>
+                                <div class="w3-col s12 m6 l6"></div>
                             </div>
                         </div>
                         
-                    </span>
+                    </div>
                 </div>
-                <div class="list-tile-trailing">
-                    <span v-if="!editing && val.state === 'P'" class="chip">{{ time }}s</span>
+                <div class="w3-col s2 m2 l2 list-tile-trailing">
+                    <span v-if="!editing && val.state === 'P'" class="chip" style="margin-right: 6px;">
+                        <span class="material-icons spin">sync</span> {{ time }}s
+                    </span>
                     <button
                         v-if="!editing && val.state === 'Q'"
-                        class="pure-button pure-button-primary icon-button pure-button-disabled"
-                        style="margin: 0 0.2rem;">
+                        style="margin-right: 6px;"
+                        disabled>
                         <i class="material-icons">pending</i>
-                    </button>
-                    <button
-                        v-if="!editing && val.state === 'P'"
-                        class="pure-button pure-button-primary icon-button pure-button-disabled"
-                        style="margin: 0 0.2rem; background: rgb(28, 184, 65);">
-                        <i class="material-icons spin">sync</i>
                     </button>
 
                     <button
                         v-if="!editing && val.state === 'I'"
                         @click="val.state = 'Q'; $emit('change', val);"
-                        class="pure-button pure-button-primary icon-button"
-                        style="background: rgb(28, 184, 65);"><i class="material-icons">play_arrow</i></button>
+                        class="primary"
+                        style="margin-right: 6px;">
+                        <i class="material-icons">play_arrow</i>
+                    </button>
 
                     <button
                         v-if="!editing && (val.state === 'P' || val.state === 'Q')"
                         @click="val.state = 'S'; $emit('change', val);"
-                        class="pure-button pure-button-primary icon-button"
-                        style="background: rgb(184, 28, 28);">
+                        class="secondary">
                         <i class="material-icons" v-if="val.state === 'P'">stop</i>
-                        <i class="material-icons" v-if="val.state === 'Q'">delete_outline</i>
+                        <i class="material-icons" v-if="val.state === 'Q'">block</i>
                     </button>
 
                     <button
                         v-if="!editing && val.state !== 'P' && val.state !== 'Q'"
                         @click="editing = true"
-                        class="pure-button pure-button-primary icon-button"
-                        style="background: rgb(14, 111, 207); margin: 0 0.2rem;">
+                        style="margin-right: 6px;">
                         <i class="material-icons">edit</i>
                     </button>
 
-                    <button
-                        v-if="editing"
-                        @click="editing = false; $emit('saved');"
-                        class="pure-button pure-button-primary icon-button"
-                        style="background: rgb(28, 184, 65); margin-left: 0.4rem; width: auto;">
-                        <i class="material-icons">check_circle</i> Save
-                    </button>
+                    <div style="display: flex; flex-direction: column;">
+                        <button
+                            v-if="editing"
+                            @click="editing = false; $emit('saved');"
+                            class="primary">
+                            <i class="material-icons">save</i> Salvar
+                        </button>
+                        <button
+                            v-if="editing"
+                            @click="editing = false;"
+                            class="secondary">
+                            <i class="material-icons">close</i> Cancelar
+                        </button>
+                    </div>
 
                     <button
                         @click="$emit('delete'); $emit('saved');"
                         v-if="!editing && val.state !== 'P' && val.state !== 'Q'"
-                        class="pure-button pure-button-primary icon-button"
-                        style="background: rgb(184, 28, 28);"><i class="material-icons">clear</i></button>
+                        class="secondary">
+                        <i class="material-icons">close</i>
+                    </button>
                 </div>
             </div>`,
             props: [ 'value', 'time' ],
@@ -178,6 +185,8 @@
             mounted() {
                 this.loop();
                 this.items = JSON.parse(localStorage.getItem('obs_lt_items') || '[]');
+
+                newItem();
             },
             methods: {
                 save() {

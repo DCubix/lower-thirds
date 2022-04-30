@@ -29,13 +29,18 @@
     
     <div class="main">
         <div class="lower-third bottom-left" id="lower-third" style="opacity: 0;">
-            <div class="lower-third-image" id="img" style="background-image: url(placeholder.png);"></div>
+            <div id="img" class="lower-third-image-hodler">
+                <div class="lower-third-image" style="background-image: url(placeholder.png);"></div>
+            </div>
+            
             <div class="lower-third-content" id="content">
                 <span class="lower-third-title" id="titulo">Titulo</span>
                 <div style="display: flex; align-items: center; opacity: 0.8;">
-                    <img src="pix.png" style="height: 28px; width: auto; margin-right: 6px; margin-left: 6px;" />
-                    <span class="lower-third-subtitle" id="caption">PIX</span>
-                    <img src="instagram.png" style="width: 32px; height: auto; margin-right: 6px; margin-left: 6px;" />
+                    <div id="pix_div" style="display: flex; align-items: center;">
+                        <img src="pix.png" style="height: 21px; width: auto; margin-right: 6px; margin-left: 6px; filter: invert(100%);" />
+                        <span class="lower-third-subtitle" id="caption">PIX</span>
+                    </div>
+                    <img src="instagram.png" style="height: 26px; width: auto; margin-right: 6px; margin-left: 6px; filter: invert(100%)" />
                     <span class="lower-third-subtitle" id="subtitulo" style="margin-right: 12px;">Instagram</span>
                 </div>
             </div>
@@ -46,7 +51,6 @@
         let ch = new BroadcastChannel('card_display_obs');
 
         function show() {
-            
             let img = document.getElementById('img');
             let content = document.getElementById('content');
             let lowerThird = document.getElementById('lower-third');
@@ -89,8 +93,14 @@
                 let subtitulo = document.getElementById('subtitulo');
                 let caption = document.getElementById('caption');
 
+                let mostraPix = dt.caption.length > 0 && dt.caption !== 'PIX';
+                document.getElementById('pix_div').style.display = mostraPix ? 'flex' : 'none';
+
+                img = img.firstElementChild;
+
                 img.style.display = dt.image ? 'block' : 'none';
                 img.style.backgroundImage = `url(${dt.image})`;
+
                 titulo.innerText = dt.title;
                 subtitulo.innerText = dt.subtitle;
                 caption.innerText = dt.caption;
